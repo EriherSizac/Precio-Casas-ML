@@ -34,7 +34,7 @@ CREATE TABLE public."User" (
     phone character varying(15),
     age integer NOT NULL,
     country character varying(25) NOT NULL,
-    form_data json NOT NULL,
+    form_data character varying NOT NULL,
     transported boolean NOT NULL
 );
 

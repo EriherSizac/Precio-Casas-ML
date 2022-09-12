@@ -1,94 +1,26 @@
 from flask import Flask, request, jsonify, render_template
-import numpy as np
-from joblib import load
-from werkzeug.utils import secure_filename
-import os
-import json
-# Cargar el modelo
-dt = load('modeloArbol.joblib')
-
-# Generar el servidor (Back-end)
-servidorWeb = Flask(__name__)
+from Global.utils.db import get, post
+from dotenv import load_dotenv
 
 
-@servidorWeb.route("/formulario", methods=['GET'])
-def formulario():
-    return render_template('pagina.html')
+# Inicializar el servidor
+app = Flask(__name__)
+
+# Cargar las variables de entorno
+load_dotenv()
+
+# Cargamos los blueprints
+from Ejercicios.Routes.Ejercicios import EJERCICIOS_BLUEPRINT
+from spaceship_titanic.Routes.Prediction import SPACESHIP_PREDICTIONS_BLUEPRINT
 
 
-# Envio de datos a través de Archivos
-@servidorWeb.route('/modeloFile', methods=['POST'])
-def modeloFile():
-    f = request.files['file']
-    filename = secure_filename(f.filename)
-    path = os.path.join(os.getcwd(), 'files', filename)
-    f.save(path)
-    file = open(path, "r")
+@app.route('/', methods=['GET'])
+def root():
+    return 'Hi'
 
-    for x in file:
-        info = x.split()
-    print(info)
-    datosEntrada = np.array([
-        float(info[0]),
-        float(info[1]),
-        float(info[2])
-    ])
-    # Utilizar el modelo
-    resultado = dt.predict(datosEntrada.reshape(1, -1))
-    # Regresar la salida del modelo
-    return jsonify({"Resultado": str(resultado[0])})
-
-
-# Envio de datos a través de Forms
-@servidorWeb.route('/modeloForm', methods=['POST'])
-def modeloForm():
-    # Procesar datos de entrada
-    contenido = request.form
-
-    datosEntrada = np.array([
-        contenido['HP'],
-        contenido['CS'],
-        contenido['DESTINATION'],
-        contenido['AGE'],
-        contenido['VIP'],
-        contenido['RS'],
-        contenido['FC'],
-        contenido['SM'],
-        contenido['SPA'],
-        contenido['VR']
-    ])
-    # Utilizar el modelo
-    resultado = dt.predict(datosEntrada.reshape(1, -1))
-    # Regresar la salida del modelo
-    return jsonify({"Resultado": str(resultado[0])})
-
-
-# Envio de datos a través de JSON
-@servidorWeb.route('/modelo', methods=['POST'])
-def modelo():
-    # Procesar datos de entrada
-    contenido = json.loads(request.data)
-    print(contenido)
-    datosEntrada = np.array([
-        contenido['pH'],
-        contenido['sulphates'],
-        contenido['alcohol']
-    ])
-    # Utilizar el modelo
-    resultado = dt.predict(datosEntrada.reshape(1, -1))
-    # Regresar la salida del modelo
-    return jsonify({"Resultado": str(resultado[0])})
-
-@servidorWeb.route('/test', methods=['POST'])
-def test():
-    import datetime
-    # Procesar datos de entrada
-    contenido = request.json
-
-    contenido['hora'] = str(datetime.datetime.now())
-    print(contenido)
-    # Regresar la salida del modelo
-    return jsonify(contenido)
+# Registramos las blueprints
+app.register_blueprint(EJERCICIOS_BLUEPRINT, url_prefix='/ejercicios')
+app.register_blueprint(SPACESHIP_PREDICTIONS_BLUEPRINT, url_prefix='spaceship')
 
 if __name__ == '__main__':
-    servidorWeb.run(debug=False, host='0.0.0.0', port='8080')
+    app.run(debug=False, host='0.0.0.0', port='8080')
