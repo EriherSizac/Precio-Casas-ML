@@ -3,7 +3,7 @@ import numpy as np
 from joblib import load
 from werkzeug.utils import secure_filename
 import os
-
+import json
 # Cargar el modelo
 dt = load('modeloArbol.joblib')
 
@@ -67,7 +67,7 @@ def modeloForm():
 @servidorWeb.route('/modelo', methods=['POST'])
 def modelo():
     # Procesar datos de entrada
-    contenido = request.json
+    contenido = json.loads(request.data)
     print(contenido)
     datosEntrada = np.array([
         contenido['pH'],
@@ -79,6 +79,16 @@ def modelo():
     # Regresar la salida del modelo
     return jsonify({"Resultado": str(resultado[0])})
 
+@servidorWeb.route('/test', methods=['POST'])
+def test():
+    import datetime
+    # Procesar datos de entrada
+    contenido = request.json
+
+    contenido['hora'] = str(datetime.datetime.now())
+    print(contenido)
+    # Regresar la salida del modelo
+    return jsonify(contenido)
 
 if __name__ == '__main__':
     servidorWeb.run(debug=False, host='0.0.0.0', port='8080')
