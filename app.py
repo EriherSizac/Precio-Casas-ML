@@ -20,7 +20,7 @@ def root():
 
 # Registramos las blueprints
 app.register_blueprint(EJERCICIOS_BLUEPRINT, url_prefix='/ejercicios')
-app.register_blueprint(SPACESHIP_PREDICTIONS_BLUEPRINT, url_prefix='spaceship')
+app.register_blueprint(SPACESHIP_PREDICTIONS_BLUEPRINT, url_prefix='/spaceship')
 
 if __name__ == '__main__':
     app.run(debug=False, host='0.0.0.0', port='8080')

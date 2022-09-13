@@ -5,3 +5,4 @@ werkzeug
 sklearn
 python-dotenv
 jsonpickle
+pandas
