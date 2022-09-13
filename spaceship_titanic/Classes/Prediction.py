@@ -2,10 +2,12 @@
 
 """
 from Global.utils.db import get, post
-from Global.utils.models import MODELO_EJERCICIOS
+from Global.utils.models import ADABOOST
 import pandas as pd
+
+
 class Prediction:
-    def ___init__(self, params: []):
+    def __init__(self, params: [], datosEntrada):
         """
         Metodo que crea una nueva prediccion con los datos enviados
         y guarda los resultados y la informacion en la base de datos.
@@ -26,18 +28,14 @@ class Prediction:
         self.phone = params[2]
         self.age = params[3]
         self.country = params[4]
-        self.form_data = params[5]
         self.transported = None
-        datosEntrada = self.getEntryDF(self.form_data)
-        self.transported = MODELO_EJERCICIOS.predict(datosEntrada.reshape(1, -1))
+        self.transported = ADABOOST.predict(datosEntrada.reshape(1, -1))
+        print(self.transported)
 
         id = post("""INSERT INTO User(name, email, phone, age, 
         country, form_data, transported) RETURNING id""", (self.name, self.email, self.phone, self.age,
-                                                           self.country, self.form_data, self.transported))
-        return self.getReturn()
+                                                           self.country, datosEntrada, self.transported))
+        return self.transported
 
     def getReturn(self):
         return self.transported
-
-    def getEntryDF(self, form_data):
-        return None
