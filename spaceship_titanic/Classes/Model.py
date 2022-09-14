@@ -109,3 +109,7 @@ class Prediction:
 
     def getReturn(self):
         return self.transported
+
+class Model:
+    def __init__(self):
+        pass
