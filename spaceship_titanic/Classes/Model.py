@@ -111,5 +111,23 @@ class Prediction:
         return self.transported
 
 class Model:
-    def __init__(self):
-        pass
+    @classmethod
+    def getInfo(cls):
+        survivded = get("""select count(transported) as "Vivos", age
+                        from public."User"
+                        where transported = True
+                        group by age""",)
+        data = {
+            "transported_vs_dead": {
+                "transported": get("""SELECT COUNT(transported) FROM public."User" WHERE transported = True""",(),False)[0],
+                "dead": get("""SELECT COUNT(transported) FROM public."User" WHERE transported = False""",(),False)[0]
+            },
+            "survival_ratio_age": {
+                "a":"a"
+            },
+            "survival_ratio_destination": {
+                "a":"a"
+            }
+        }
+
+        return data

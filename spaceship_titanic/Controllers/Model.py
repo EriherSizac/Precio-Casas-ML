@@ -1,7 +1,7 @@
 """
 
 """
-from spaceship_titanic.Classes.Model import Prediction
+from spaceship_titanic.Classes.Model import Prediction, Model
 from flask import request, jsonify, current_app, render_template
 from flask_mail import Mail, Message
 
@@ -33,3 +33,4 @@ def howToSurvive():
     }
 
 def getInfo():
+    return Model.getInfo()

@@ -7,3 +7,10 @@ DATABASE_PORT=
 
 # Modelos
 MODELS =
+
+# Correo electronico
+MAIL_SERVER=send.one.com
+MAIL_PORT=465
+MAIL_USE_SSL=True
+MAIL_USERNAME=
+MAIL_PASSWORD=
