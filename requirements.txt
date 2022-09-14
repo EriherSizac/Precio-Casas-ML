@@ -6,3 +6,4 @@ sklearn
 python-dotenv
 jsonpickle
 pandas
+psycopg2
