@@ -35,6 +35,7 @@ CREATE TABLE public."User" (
     age integer NOT NULL,
     country character varying(25) NOT NULL,
     form_data character varying NOT NULL,
+    destination character varying NOT NULL,
     transported boolean NOT NULL
 );
 

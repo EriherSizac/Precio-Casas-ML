@@ -62,3 +62,13 @@ def get(query, params, fetchAll=True):
     except Exception as e:
         print(e)
         return e
+
+def drop(query):
+    try:
+        conn.rollback()
+        cursor = conn.cursor()
+        cursor.execute(query)
+        conn.commit()
+    except Exception as e:
+        print(e)
+        return e

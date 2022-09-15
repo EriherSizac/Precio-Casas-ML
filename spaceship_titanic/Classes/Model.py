@@ -1,7 +1,7 @@
 """
 
 """
-from Global.utils.db import get, post
+from Global.utils.db import get, post, drop
 from Global.utils.models import ADABOOST
 import pandas as pd
 import numpy as np
@@ -24,7 +24,7 @@ class Prediction:
 
         import jsonpickle
         params = self.getParams(json)
-        datosEntrada = self.getEntryData(json)
+        datosEntrada, datosJson = self.getEntryData(json)
         self.id = None
         self.name = params[0]
         self.email = params[1]
@@ -35,8 +35,8 @@ class Prediction:
         self.transported = ADABOOST.predict(datosEntrada.reshape(1, -1))
 
         id = post("""INSERT INTO public."User"(name, email, phone, age, 
-        country, form_data, transported) VALUES(%s, %s, %s, %s, %s, %s, %s) RETURNING id""", (self.name, self.email, self.phone, self.age,
-                                                           self.country, jsonpickle.encode(datosEntrada), bool(self.transported)), returns=True)
+        country, form_data, destination, transported) VALUES(%s, %s, %s, %s, %s, %s, %s, %s) RETURNING id""", (self.name, self.email, self.phone, self.age,
+                                                           self.country, jsonpickle.encode(json), json["destiny"] , bool(self.transported)), returns=True)
         self.id = id
 
 
@@ -104,8 +104,7 @@ class Prediction:
         elif json['destiny'] == 'TRAPPIST-1e':
             datosEntrada.extend([0, 0, 1])
 
-        datosEntrada = np.array(datosEntrada)
-        return datosEntrada
+        return np.array(datosEntrada), datosEntrada
 
     def getReturn(self):
         return self.transported
@@ -113,21 +112,75 @@ class Prediction:
 class Model:
     @classmethod
     def getInfo(cls):
-        survivded = get("""select count(transported) as "Vivos", age
+        survived = get("""select count(transported) as "Vivos", age
                         from public."User"
                         where transported = True
-                        group by age""",)
+                        group by age order by age""",())
+        total = get("""select count(transported) as "Vivos", age
+                                from public."User"
+                                group by age order by age""", ())
+
+        percentagePerAge = get(
+            """
+            select count(age) as "TotalporEdad", age
+            into table temp2
+            from public."User"
+            group by age;
+            
+            select count(transported) as "Vivos", age
+            into table temp1
+            from public."User"
+            where transported = True
+            group by age;
+            
+            select temp1."age", temp1."Vivos"::numeric/b."TotalporEdad"::numeric as "DATA"
+            from temp1
+            left join temp2 b on temp1."age" = b."age";
+            """,()
+        )
+        drop("""drop table temp1, temp2;""")
+
+
+        survivalPerc = pd.DataFrame(percentagePerAge)
+        colsS = survivalPerc[0].to_list()
+        survivalPerc = pd.DataFrame(survivalPerc[1]).transpose()
+        survivalPerc.columns = colsS
+        survivalPerc = survivalPerc.to_dict()
+
+        percentagePerDest = get(
+            """
+            select count(destination) as "TotalporPlaneta", destination
+            into table temp2
+            from public."User"
+            group by destination;
+            
+            select count(transported) as "Vivos", destination
+            into table temp1
+            from public."User"
+            where transported = True
+            group by destination;
+            
+            select temp1."destination", temp1."Vivos"::numeric/b."TotalporPlaneta"::numeric as "DATA"
+            from temp1
+            left join temp2 b on temp1."destination" = b."destination";
+            """, ()
+        )
+        drop("""drop table temp1, temp2;""")
+
+        survivalDest = pd.DataFrame(percentagePerDest)
+        colsD = survivalDest[0].to_list()
+        survivalDest = pd.DataFrame(survivalDest[1]).transpose()
+        survivalDest.columns = colsD
+        survivalDest = survivalDest.to_dict()
+
+
         data = {
             "transported_vs_dead": {
                 "transported": get("""SELECT COUNT(transported) FROM public."User" WHERE transported = True""",(),False)[0],
                 "dead": get("""SELECT COUNT(transported) FROM public."User" WHERE transported = False""",(),False)[0]
             },
-            "survival_ratio_age": {
-                "a":"a"
-            },
-            "survival_ratio_destination": {
-                "a":"a"
-            }
+            "survival_ratio_age": survivalPerc,
+            "survival_ratio_destination": survivalDest
         }
 
         return data
