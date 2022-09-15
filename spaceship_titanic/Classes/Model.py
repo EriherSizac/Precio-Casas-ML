@@ -143,7 +143,7 @@ class Model:
 
         survivalPerc = pd.DataFrame(percentagePerAge)
         colsS = survivalPerc[0].to_list()
-        colsP = [float(value) for value in survivalPerc[1].to_list()]
+        colsP = [round(float(value), 2) for value in survivalPerc[1].to_list()]
 
         # Destinos
 
@@ -172,6 +172,9 @@ class Model:
         survivalDest = pd.DataFrame(survivalDest[1]).transpose()
         survivalDest.columns = colsD
         survivalDest = survivalDest.to_dict()
+        survivalDest['55 Cancri e'][1] = round(float(survivalDest['55 Cancri e'][1]), 2)
+        survivalDest['PSO J318.5-22'][1] = round(float(survivalDest['PSO J318.5-22'][1]), 2)
+        survivalDest['TRAPPIST-1e'][1] = round(float(survivalDest['TRAPPIST-1e'][1]), 2)
 
 
         data = {
