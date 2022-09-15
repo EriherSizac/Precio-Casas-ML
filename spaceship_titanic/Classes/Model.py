@@ -147,6 +147,8 @@ class Model:
         survivalPerc.columns = colsS
         survivalPerc = survivalPerc.to_dict()
 
+        # Destinos
+
         percentagePerDest = get(
             """
             select count(destination) as "TotalporPlaneta", destination
