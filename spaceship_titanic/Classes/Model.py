@@ -172,9 +172,18 @@ class Model:
         survivalDest = pd.DataFrame(survivalDest[1]).transpose()
         survivalDest.columns = colsD
         survivalDest = survivalDest.to_dict()
-        survivalDest['55 Cancri e'][1] = round(float(survivalDest['55 Cancri e'][1]), 2)
-        survivalDest['PSO J318.5-22'][1] = round(float(survivalDest['PSO J318.5-22'][1]), 2)
-        survivalDest['TRAPPIST-1e'][1] = round(float(survivalDest['TRAPPIST-1e'][1]), 2)
+        try:
+            survivalDest['55 Cancri e'][1] = round(float(survivalDest['55 Cancri e'][1]), 2)
+        except:
+            survivalDest.pop('55 Cancri e')
+        try:
+            survivalDest['PSO J318.5-22'][1] = round(float(survivalDest['PSO J318.5-22'][1]), 2)
+        except:
+            survivalDest.pop('PSO J318.5-22')
+        try:
+            survivalDest['TRAPPIST-1e'][1] = round(float(survivalDest['TRAPPIST-1e'][1]), 2)
+        except:
+            survivalDest.pop('TRAPPIST-1e')
 
 
         data = {
