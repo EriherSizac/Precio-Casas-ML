@@ -175,15 +175,15 @@ class Model:
         try:
             survivalDest['55 Cancri e'][1] = round(float(survivalDest['55 Cancri e'][1]), 2)
         except:
-            survivalDest.pop('55 Cancri e')
+            pass
         try:
             survivalDest['PSO J318.5-22'][1] = round(float(survivalDest['PSO J318.5-22'][1]), 2)
         except:
-            survivalDest.pop('PSO J318.5-22')
+            pass
         try:
             survivalDest['TRAPPIST-1e'][1] = round(float(survivalDest['TRAPPIST-1e'][1]), 2)
         except:
-            survivalDest.pop('TRAPPIST-1e')
+            pass
 
 
         data = {
