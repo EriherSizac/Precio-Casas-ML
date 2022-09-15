@@ -143,9 +143,7 @@ class Model:
 
         survivalPerc = pd.DataFrame(percentagePerAge)
         colsS = survivalPerc[0].to_list()
-        survivalPerc = pd.DataFrame(survivalPerc[1]).transpose()
-        survivalPerc.columns = colsS
-        survivalPerc = survivalPerc.to_dict()
+        colsP = [float(value) for value in survivalPerc[1].to_list()]
 
         # Destinos
 
@@ -181,7 +179,10 @@ class Model:
                 "transported": get("""SELECT COUNT(transported) FROM public."User" WHERE transported = True""",(),False)[0],
                 "dead": get("""SELECT COUNT(transported) FROM public."User" WHERE transported = False""",(),False)[0]
             },
-            "survival_ratio_age": survivalPerc,
+            "survival_ratio_age": {
+                "age": colsS,
+                "prob": colsP
+            },
             "survival_ratio_destination": survivalDest
         }
 
