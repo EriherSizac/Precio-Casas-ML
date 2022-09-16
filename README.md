@@ -8,4 +8,4 @@ Repositorio para el equipo 5 de la concentración de IA del reto de kaggle.
 Con estas correcciones alcanzamos un score en Kaggle de 0.80757.
 
 ## Correcciones adicionales post-entrega
-Una vez que realizamos la presentación, se nos comentó que para la creación de la columna "passenger_group" no se debían de utilizar los últimos dos dígitos de la columna "passenger_id", así que utilizamos el penúltimo digito para la creación del "passenger_group". Este cambio subió nuestro score en Kaggle hasta 0.80780.
+Una vez que realizamos la presentación, se nos comentó que para la creación de la columna "passenger_group" no se debían de utilizar los últimos dos dígitos de la columna "passenger_id", sino que más bien los primeros 4 dígitos antes del guión bajo, son los que representan el grupo de forma que gggg_pp gggg representando el grupo y pp el id de la persona en el grupo. Este cambio subió nuestro score en Kaggle hasta 0.80780.
