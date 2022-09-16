@@ -2,7 +2,7 @@
 
 """
 from Global.utils.db import get, post, drop
-from Global.utils.models import ADABOOST
+from Global.utils.models import XGBOOST 
 import pandas as pd
 import numpy as np
 
@@ -32,7 +32,7 @@ class Prediction:
         self.age = params[3]
         self.country = params[4]
         self.transported = None
-        self.transported = ADABOOST.predict(datosEntrada.reshape(1, -1))
+        self.transported = XGBOOST.predict(datosEntrada.reshape(1, -1))
 
         id = post("""INSERT INTO public."User"(name, email, phone, age, 
         country, form_data, destination, transported) VALUES(%s, %s, %s, %s, %s, %s, %s, %s) RETURNING id""", (self.name, self.email, self.phone, self.age,
